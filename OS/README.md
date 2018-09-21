@@ -48,3 +48,153 @@
 **멀티 스레드 vs 멀티 프로세스**
 
 - 멀티  스레드는 멀티 프로세스보다 적은 메모리 공간을 차지하고 context switching이 빠르지만, 하나의 스레드가 종료되면 전체 스레드가 종료될 수 있으며 병목 현상 없는 동기화를 신경써주어야 한다. 멀티 프로세스는 하나의 프로세스가 종료되어도 다른 프로세스가 영향을 받지 않지만, 스레드보다 많은 메모리 공간과 CPU 시간을 차지한다. 
+
+
+
+***스프링에서의 멀티 스레드***
+
+***AsyncConfig.java***
+
+- 쓰레드를 사용하기 위해 설정 파일에 @EnableAsync를 추가한다. 
+
+```java
+
+import java.util.concurrent.Executor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.SyncTaskExecutor;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+@Configuration
+@EnableAsync
+public class AsyncConfig {
+	
+	
+	final static int CORE_POOL_SIZE=5;
+	final static int MAX_POOL_SIZE=10;
+	final static int QUEUE_CAPACITY=100;
+	//final static int KEEP_ALIVE_SECONDS=num
+	
+    @Bean(name = "threadPoolTaskExecutor")
+    public Executor threadPoolTaskExecutor() {
+    	/*
+    	 * CORE_POOL_SIZE만큼 기본 쓰레드 생성 
+    	 * 넘어가면 QUEUE에 쓰레드를 QUEUE_SIZE만큼 넣는다.
+    	 * QUEUE가 꽉차면 MAX_POOL_SIZE만큼 쓰레드 실행이 가능함 
+    	 */
+    	ThreadPoolTaskExecutor tte=new ThreadPoolTaskExecutor();
+    	tte.setCorePoolSize(CORE_POOL_SIZE);//Set the ThreadPoolExecutor's core pool size.
+    	tte.setQueueCapacity(QUEUE_CAPACITY);
+        return tte;
+    }
+    
+    @Bean(name = "syncTaskExecutor")
+    public Executor syncTaskExecutor() {
+    	/* 호출한 쓰레드 상에서 쓰레드가 실행됨 */
+    	SyncTaskExecutor ste=new SyncTaskExecutor();
+        return ste;
+    }
+
+    public Executor simpleAsyncTaskExecutor(int threadPriority) {
+    	/* 쓰레드를 재사용하지 않고 요청할 때마다 생성하여 수행*/
+    	SimpleAsyncTaskExecutor sate=new SimpleAsyncTaskExecutor();
+    	sate.setThreadPriority(threadPriority);
+        return sate;
+    }
+
+} 
+
+```
+
+***ThreadService.java***
+
+```java
+package kr.ac.spring;
+
+import java.util.concurrent.Future;
+
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ThreadService {
+	@Async("threadPoolTaskExecutor")
+	public void asyncMethodWithVoidReturnType() {
+		System.out.println("asyncMethodWithVoidReturnType: "+ Thread.currentThread().getName());
+	}
+	
+	@Async("threadPoolTaskExecutor")
+	public Future<String> asyncMethodWithReturnType(){
+		
+		System.out.println("asyncMethodWithReturnType: "+Thread.currentThread().getName());
+		
+		try {
+			Thread.sleep(1000);
+			System.out.println("asyncMethodWithReturnType END: "+Thread.currentThread().getName());
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+}
+
+```
+
+
+
+***ThreadTestController***
+
+```java
+package kr.ac.spring;
+
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+public class ThreadTestController {
+
+	Logger logger=org.slf4j.LoggerFactory.getLogger(ThreadTestController.class);
+	
+	@Autowired
+	ThreadService service;
+	
+	@RequestMapping(value="/", method=RequestMethod.GET)
+	public ModelAndView threadTest() {
+		ModelAndView mv=new ModelAndView();
+		service.asyncMethodWithReturnType();
+		service.asyncMethodWithReturnType();
+		service.asyncMethodWithReturnType();
+		service.asyncMethodWithReturnType();		
+		service.asyncMethodWithReturnType();
+
+		return mv;
+	}
+
+}
+
+```
+
+***Result***
+
+```xml
+asyncMethodWithReturnType: threadPoolTaskExecutor-3
+asyncMethodWithReturnType: threadPoolTaskExecutor-4
+asyncMethodWithReturnType: threadPoolTaskExecutor-5
+asyncMethodWithReturnType: threadPoolTaskExecutor-2
+asyncMethodWithReturnType: threadPoolTaskExecutor-1
+asyncMethodWithReturnType END: threadPoolTaskExecutor-4
+asyncMethodWithReturnType END: threadPoolTaskExecutor-1
+asyncMethodWithReturnType END: threadPoolTaskExecutor-2
+asyncMethodWithReturnType END: threadPoolTaskExecutor-5
+asyncMethodWithReturnType END: threadPoolTaskExecutor-3
+```
+
