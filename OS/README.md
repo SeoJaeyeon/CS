@@ -1,6 +1,13 @@
 ## OS(Operating System)
 
+**목차**
+
+- [프로세스 vs 스레드](#프로세스와-스레드의-차이)
+- [프로세스 스케줄러](#프로세스-스케줄러)
+
 ### 프로세스와 스레드의 차이
+
+---
 
 **프로세스**
 
@@ -197,4 +204,54 @@ asyncMethodWithReturnType END: threadPoolTaskExecutor-2
 asyncMethodWithReturnType END: threadPoolTaskExecutor-5
 asyncMethodWithReturnType END: threadPoolTaskExecutor-3
 ```
+
+
+
+### 프로세스 스케줄러
+
+------
+
+그림출처: 본인
+
+![img](https://github.com/SeoJaeyeon/CS/blob/master/img/process_integration.png?raw=true))
+
+### 스케줄러
+
+**장기스케줄러**
+
+"디스크(secondary storage)의 프로세스를 메모리에 옮겨 CPU의 할당을 기다리도록 하는 스케줄러(admit). 다중프로그래밍의 정도를 제어함."
+
+new(프로세스 생성), suspend(메모리의 프로세스가 디스크로 옮겨진 상태) -> ready 
+
+cf) 시분할 시스템에서는 장기 스케줄러가 없음.
+
+**단기스케줄러**
+
+"메모리의 프로세스가 CPU의 할당을 받도록 하는 스케줄러(dispatch)"
+
+ready -> running
+
+
+
+**중기스케줄러**
+
+"메모리의 프로세스를 모두 디스크로 옮기는 스케줄러. 멀티프로그래밍 제어(swap out)"
+
+ready -> suspend
+
+
+
+### 큐의 종류
+
+**Job Queue** 
+
+"디스크에서 메모리로 옮겨지는 것을 기다리는 프로세스의 집합"
+
+**Ready Queue**
+
+"메모리에서 CPU의 할당을 기다리는 프로세스의 집합"
+
+**Device Queue**
+
+"Device I/O 작업을 기다리는 프로세스의 집합"
 
