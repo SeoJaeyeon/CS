@@ -5,8 +5,9 @@
 - [프로세스 vs 스레드](#프로세스와-스레드의-차이)
 - [프로세스 스케줄러](#프로세스-스케줄러)
 - [CPU 스케줄링](#cpu-스케줄링)
+- [병행 프로세스](#병행-프로세스)
 - [동기와 비동기](#동기와-비동기)
-- [병행 프로세스와 상호배제](#병행-프로세스와-상호배제)
+- [메모리 관리 전략](#메모리-관리-전략)
 
 ### 프로세스와 스레드의 차이
 
@@ -360,13 +361,13 @@ cf) 대기시간: 프로세스가 대기한 평균 시간
 
 - Fork와 Join 구조
 
-  ![img](https://github.com/SeoJaeyeon/CS/blob/master/img/fork-join.png?raw=true)
+  ![img](https://github.com/SeoJaeyeon/CS/blob/master/img/fork-join.PNG?raw=true)
 
 
 
 - parbegin-parend 구조
 
-![img](https://github.com/SeoJaeyeon/CS/blob/master/img/parbegin-parend.png?raw=true)
+![img](https://github.com/SeoJaeyeon/CS/blob/master/img/parbegin-parend.PNG?raw=true)
 
 
 
@@ -448,3 +449,57 @@ cf) Semaphores vs Monitor
 
 
 
+**교착상태**
+
+두 개 이상의 작업이 서로 상대방의 작업이 끝나기 만을 기다리고 있기 때문에 아무것도 완료되지 못하는 상태
+
+​	**필요조건**
+
+- 상호배타(Mutual exclusion)
+
+- 보유 및 대기(Hold and Wait)
+
+- 비선점(No Preemption)
+
+- 환형대기(Circular wait)
+
+  **교착상태 해결 방법**
+
+- 교착상태 방지: 교착상태 필요조건 중 한 가지 이상을 불만족 시키는 방법.
+
+- 교착상태 회피: 자원을 할당할 때 안전하게 할당하는 것
+
+- 교착상태 검출 및 복구 방법: 교착상태를 허용하고 발생 시 복구하는 방법. 프로세스 일부 강제 종료 또는 자원 선점
+
+- 교착상태 무시: 종료 후 재시동
+
+
+
+### 메모리 관리 전략
+
+---
+
+**메모리 관리 배경**
+
+- Swapping: CPU 할당 시간이 종료된 프로세스를 보조기억 장치로 보내고, 다른 프로세스를 메모리로 불러 들이는 과정
+- 단편화(Fragmentation): 메모리의 swapping의 반복으로 인해 발생하는 메모리의 빈 공간. 이 빈 공간에는 어떤 프로세스도 할당될 수 없음. 
+  - 외부 단편화: 메모리 공간 중 사용 못하게 되는 일부 부분
+  - 내부 단편화: 메모리가 분할되어 있을 때, 분할된 부분에 프로세스가 할당되고 남은 공간. 
+
+
+
+**외부 단편화를 해결하는 방식**
+
+- 연속 메모리 할당
+  - 최초 적합(First-fit): 메모리를 순차적으로 탐색하여 가장 먼저 발견하고 들어갈 수 있는 공간에 프로세스 적재
+  - 최적 적합(Best-fit): 남는 공간이 가장 없는 공간에 적재
+  - 최악 적합(Worst-fit): 가장 많이 넘는 공간에 프로세스 할당
+- Compaction(압축): 단편화된 공간을 한 곳에 모음
+
+- 페이징(Paging): 연속 메모리 할당, Compaction의 한계를 보완하기 위한 방식 
+
+  - 프로세스를 일정 크기인 페이지로 잘라서 메모리에 적재하는 방식
+  - 페이지: 프로세스를 자르는 단위
+  - 프레임: 같은 크기로 메모리를 자르는 단위
+
+  ![img](https://github.com/SeoJaeyeon/CS/blob/master/img/paging.PNG?raw=true)
