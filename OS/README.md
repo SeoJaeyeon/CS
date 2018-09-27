@@ -601,7 +601,7 @@ Q. 페이지 크기가 4bytes 이고 페이지 0 - 3까지 각 5,6,1,2 값을 �
 
 **유닉스의 구조**
 
-![img](https://github.com/SeoJaeyeon/CS/blob/master/img/unix.JPG?raw=true)
+![img](https://github.com/SeoJaeyeon/CS/blob/master/img/unix.jpg?raw=true)
 
 - 커널: 프로세스 제어블록/ 장치 드라이버/ 파일 서브 시스템/시스템 자원 관리/하드웨어 자원 관리/ 이식성
 - 셸: 응용 프로그램으로부터 명령을 받아 커널에전송/ 입력 제어/ 프로그램 수행/ 
