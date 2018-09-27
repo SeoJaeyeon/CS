@@ -5,6 +5,8 @@
 - [프로세스 vs 스레드](#프로세스와-스레드의-차이)
 - [프로세스 스케줄러](#프로세스-스케줄러)
 - [CPU 스케줄링](#cpu-스케줄링)
+- [동기와 비동기](#동기와-비동기)
+- [병행 프로세스와 상호배제](#병행-프로세스와-상호배제)
 
 ### 프로세스와 스레드의 차이
 
@@ -282,7 +284,7 @@ asyncMethodWithReturnType END: threadPoolTaskExecutor-3
 
 
 
-   **SJF(Shortest Job First)**
+​	**SJF(Shortest Job First)**
 
 - 처리 시간이 짧은 프로세스를 먼저 처리한다.
 
@@ -347,3 +349,73 @@ asyncMethodWithReturnType END: threadPoolTaskExecutor-3
 cf) 대기시간: 프로세스가 대기한 평균 시간
 
 ​     반환시간: 대기시간 + 실행시간
+
+
+
+### 동기와 비동기
+
+---
+
+**Sync vs Async**
+
+- 동기: 메소드를 실행시키고 반환할 때까지 blocking되어 있어 다른 작업을 수행하지 못하는 상태.
+- 비동기: 메소드를 실행시키고 이벤트 큐나 백그라운드 스레드에 task를 넘긴 후, 바로 다음 작업을 수행하는 상태. 언제 반환될지 예측할 수 없음.
+
+
+
+### 프로세스 동기화
+
+---
+
+**임계영역(Critical Section)**
+
+공유 자원을 동시에 접근하는 작업을 실행하는 코드 영역
+
+
+
+**임계영역 문제(Critical Section Problem)**
+
+프로세스들이 임계영역을 함께 사용할 수 있는 프로토콜을 설계하는 것
+
+​	<u>해결을 위한 조건</u>
+
+- Mutual Exclusion(상호배제): 어떤 프로세스가 임계 영역에서 실행 중이면, 다른 프로세스들은 그들이 가진 임계영역에서 실행될 수 없음.
+- Progress(진행): 임계 영역에서 실행 중인 프로세스가 없다면, 별도의 동작이 없는 프로세스들만 임계 영역 진입 후보로서 참여될 수 있음. 프로세스들 중 하나는 유한한 시간 내에 진입할 수 있어야 함.
+- Bounded Waiting(한정된 대기): 프로세스가 임계 영역에 진입 신청 후 부터 받아들여질 때까지, 다른 프로세스들이 임계 영역에 진입하는 횟수는 제한이 있어야 함
+
+
+
+**해결책**
+
+`Lock(MUTEX)`
+
+- 하드웨어 기반 해결책으로, critical section에 진입하는 프로세스는 Lock을 획득하고, 나올 때 Lock을 해제함으로써 동시 접근을 방지함
+- 단점: 다중 처리기 환경에서 시간 효율성으로 인해 적용할 수 없음. Busy Waiting
+
+
+
+`Semaphores`
+
+- 소프트웨어 기반 해결책으로 Counting Semaphores와 Binary Semaphores를 구분함
+- Counting Semaphores: 가용한 개수를 가진 자원에 대한 접근 제어. 세마포는 가용한 자원의 개수로 초기화됨. 자원을 사용하면 세마포 감소, 방출하면 세마포 증가
+- Binary Semaphores: 0과 1사이의 값만 가능하며 다중 프로세스들 사이의 Critical section 문제를 해결하기 위해 사용. 일종의 Locking 매커니즘.
+-  단점: Busy Wating, CPU 시간 낭비/ Deadlock
+
+
+
+cf) MUTEX vs Semaphores
+
+공유자원에 대한 접근권한, Lock을 하나만 가질 수 있는 것은 MUTEX, 여러개 가질 수 있는 것은 세마포어
+
+
+
+`모니터`
+
+- 고급 언어의 설계 구조물로서, 개발자의 코드를 상호배제 하게끔 만드는 추상화된 데이터 형태
+- 자바 Object 클래스의 synchronized 키워드와 wait(), notify(), notifyAll() 함수로 구현된다. synchronized 키워드로 공유자원에 접근하고 wait 함수에 의해 block되며, notify 함수를 통해 block을 해제하는 방식으로 사용된다. 
+
+
+
+cf) Semaphores vs Monitor
+
+모니터는 키의 획득과 해제가 세마포어보다 간단함. 
