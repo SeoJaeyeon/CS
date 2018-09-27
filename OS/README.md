@@ -352,6 +352,26 @@ cf) 대기시간: 프로세스가 대기한 평균 시간
 
 
 
+### 병행 프로세스
+
+------
+
+**언어적 표현과 병행 문장**
+
+- Fork와 Join 구조
+
+  ![img](https://github.com/SeoJaeyeon/CS/blob/master/img/fork-join.png?raw=true)
+
+
+
+- parbegin-parend 구조
+
+![img](https://github.com/SeoJaeyeon/CS/blob/master/img/parbegin-parend.png?raw=true)
+
+
+
+
+
 ### 동기와 비동기
 
 ---
@@ -366,6 +386,12 @@ cf) 대기시간: 프로세스가 대기한 평균 시간
 ### 프로세스 동기화
 
 ---
+
+**동기화**
+
+둘 이상의 프로세스가 시간에 따라 실행 순서가 이루어져야 할 경우, 그 순서를 결정하는 것
+
+
 
 **임계영역(Critical Section)**
 
@@ -419,3 +445,6 @@ cf) MUTEX vs Semaphores
 cf) Semaphores vs Monitor
 
 모니터는 키의 획득과 해제가 세마포어보다 간단함. 
+
+
+
