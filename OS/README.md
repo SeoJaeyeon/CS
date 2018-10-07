@@ -2,6 +2,8 @@
 
 **목차**
 
+- [OS](#os)
+
 - [프로세스 vs 스레드](#프로세스와-스레드의-차이)
 - [프로세스 스케줄러](#프로세스-스케줄러)
 - [CPU 스케줄링](#cpu-스케줄링)
@@ -12,6 +14,32 @@
 - [캐시의 지역성](#캐시의-지역성)
 - [Unix](#unix)
 
+
+
+### OS
+
+---
+
+#### 운영체제의 기능
+
+- 컴퓨터 자원을 효율적으로 관리하는 기능
+- 입/출력에 대한 일을 대행하거나 사용자가 컴퓨터를 손쉽게 사용할 수 있도록 하는 인터페이스 기능
+- 시스템에서 발생하는 오류로부터 시스템을 보호하는 신뢰성 기능
+- 자원의 스케줄링
+- 시스템의 각종 하드웨어와 네트워크를 관리 및 제어
+
+- 가상 계산기 기능
+
+
+#### 운영체제 성능 평가 기준
+
+- 처리능력(Throughput)
+- 반환 시간(Turn Around Time): 시스템에 작업을 의뢰한 시간부터 처리가 완료될 때까지 걸린 시간
+- 사용 가능도(Availability): 시스템을 사용할 필요가 있을 때 즉시 사용 가능한 정도. 다중 프로그래밍과 관련
+- 신뢰도(Reliability): 시스템이 주어진 문제를 정확하게 해결하는 정도
+
+
+
 ### 프로세스와 스레드의 차이
 
 ---
@@ -19,10 +47,10 @@
 **프로세스**
 
 - 실행중인 프로그램 
-
 - 메모리에 적재되어 CPU의 할당을 기다리는 프로그램 
-
 - 프로세스 스택 (지역변수, 매개변수, 복귀주소)+ 데이터 섹션(전역변수) + 힙(동적할당)
+- PCB를 가진 프로그램
+- 비동기적 행위를 일으키는 주체
 
 **PCB**
 
@@ -65,153 +93,18 @@
 
 
 
-***스프링에서의 멀티 스레드***
+**사용자 수준 스레드 vs 커널 수준 스레드**
 
-***AsyncConfig.java***
+`사용자 수준의 스레드`
 
-- 쓰레드를 사용하기 위해 설정 파일에 @EnableAsync를 추가한다. 
+- 사용자가 만든 라이브러리를 사용하여 스레드를 운용한다.
+- 속도는 빠르지만 구현이 어렵다.
 
-```java
+`커널 수준 스레드`
 
-import java.util.concurrent.Executor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.core.task.SyncTaskExecutor;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+- 운영체제의 커널에 의해 스레드를 운용한다.
 
-@Configuration
-@EnableAsync
-public class AsyncConfig {
-	
-	
-	final static int CORE_POOL_SIZE=5;
-	final static int MAX_POOL_SIZE=10;
-	final static int QUEUE_CAPACITY=100;
-	//final static int KEEP_ALIVE_SECONDS=num
-	
-    @Bean(name = "threadPoolTaskExecutor")
-    public Executor threadPoolTaskExecutor() {
-    	/*
-    	 * CORE_POOL_SIZE만큼 기본 쓰레드 생성 
-    	 * 넘어가면 QUEUE에 쓰레드를 QUEUE_SIZE만큼 넣는다.
-    	 * QUEUE가 꽉차면 MAX_POOL_SIZE만큼 쓰레드 실행이 가능함 
-    	 */
-    	ThreadPoolTaskExecutor tte=new ThreadPoolTaskExecutor();
-    	tte.setCorePoolSize(CORE_POOL_SIZE);//Set the ThreadPoolExecutor's core pool size.
-    	tte.setQueueCapacity(QUEUE_CAPACITY);
-        return tte;
-    }
-    
-    @Bean(name = "syncTaskExecutor")
-    public Executor syncTaskExecutor() {
-    	/* 호출한 쓰레드 상에서 쓰레드가 실행됨 */
-    	SyncTaskExecutor ste=new SyncTaskExecutor();
-        return ste;
-    }
-
-    public Executor simpleAsyncTaskExecutor(int threadPriority) {
-    	/* 쓰레드를 재사용하지 않고 요청할 때마다 생성하여 수행*/
-    	SimpleAsyncTaskExecutor sate=new SimpleAsyncTaskExecutor();
-    	sate.setThreadPriority(threadPriority);
-        return sate;
-    }
-
-} 
-
-```
-
-***ThreadService.java***
-
-```java
-package kr.ac.spring;
-
-import java.util.concurrent.Future;
-
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
-import org.springframework.stereotype.Service;
-
-@Service
-public class ThreadService {
-	@Async("threadPoolTaskExecutor")
-	public void asyncMethodWithVoidReturnType() {
-		System.out.println("asyncMethodWithVoidReturnType: "+ Thread.currentThread().getName());
-	}
-	
-	@Async("threadPoolTaskExecutor")
-	public Future<String> asyncMethodWithReturnType(){
-		
-		System.out.println("asyncMethodWithReturnType: "+Thread.currentThread().getName());
-		
-		try {
-			Thread.sleep(1000);
-			System.out.println("asyncMethodWithReturnType END: "+Thread.currentThread().getName());
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-}
-
-```
-
-
-
-***ThreadTestController***
-
-```java
-package kr.ac.spring;
-
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-
-@Controller
-public class ThreadTestController {
-
-	Logger logger=org.slf4j.LoggerFactory.getLogger(ThreadTestController.class);
-	
-	@Autowired
-	ThreadService service;
-	
-	@RequestMapping(value="/", method=RequestMethod.GET)
-	public ModelAndView threadTest() {
-		ModelAndView mv=new ModelAndView();
-		service.asyncMethodWithReturnType();
-		service.asyncMethodWithReturnType();
-		service.asyncMethodWithReturnType();
-		service.asyncMethodWithReturnType();		
-		service.asyncMethodWithReturnType();
-
-		return mv;
-	}
-
-}
-
-```
-
-***Result***
-
-```xml
-asyncMethodWithReturnType: threadPoolTaskExecutor-3
-asyncMethodWithReturnType: threadPoolTaskExecutor-4
-asyncMethodWithReturnType: threadPoolTaskExecutor-5
-asyncMethodWithReturnType: threadPoolTaskExecutor-2
-asyncMethodWithReturnType: threadPoolTaskExecutor-1
-asyncMethodWithReturnType END: threadPoolTaskExecutor-4
-asyncMethodWithReturnType END: threadPoolTaskExecutor-1
-asyncMethodWithReturnType END: threadPoolTaskExecutor-2
-asyncMethodWithReturnType END: threadPoolTaskExecutor-5
-asyncMethodWithReturnType END: threadPoolTaskExecutor-3
-```
-
+- 구현이 쉽지만 속도가 느리다.
 
 
 ### 프로세스 스케줄러
@@ -300,7 +193,7 @@ asyncMethodWithReturnType END: threadPoolTaskExecutor-3
 
 ​	**HRN(Highest Response ratio Next)**
 
-- wating time+burst/burst 공식을 통해 우선순위 부여
+- wating time+burst(서비스시간)/burst 공식을 통해 우선순위 부여
 - SJF 의 단점 보완
 - 비선점형
 - 처리시간에 비해 기다린 시간이 크면 우선순위를 가질 수 있음
@@ -355,6 +248,15 @@ cf) 대기시간: 프로세스가 대기한 평균 시간
 ​     반환시간: 대기시간 + 실행시간
 
 
+
+### 디스크 스케줄링
+
+---
+
+- FCFS: 디스크 대기 큐에 가장 먼저 들어온 트랙에 대한 요청을 먼저 서비스하는 기법
+- SSTF: 탐색 거리가 가장 짧은 트랙에 대한 요청을 먼저 서비스하는 기법
+- SCAN: SSTF가 갖는 탐색 시간의 편차를 해소하기 위한 기법으로, 현재 헤드의 위치에서 진행 방향이 결정되면 탐색 거리가 짧은 순서에 따라 그 방향의 모든 요청을 서비스하고, 끝까지 이동한 후 역방향의 요청사항을 서비스하는 기법
+- Sector Queuing: 회전시간의 최적화를 위해 구현된 스케줄링 기법
 
 ### 병행 프로세스
 
@@ -458,23 +360,27 @@ cf) Semaphores vs Monitor
 
 ​	**필요조건**
 
-- 상호배타(Mutual exclusion)
+- 상호배타(Mutual exclusion): 한번에 한개의 프로세스만 공유 자원을 사용할 수 있어야 함
 
-- 보유 및 대기(Hold and Wait)
+- 보유 및 대기(Hold and Wait): 최소한 하나의 자원을 점유하고 있으면서 다른 프로세스에 할당되어 사용되고 있는 자원을 추가로 점유하기 위해 대기하는 프로세스가 있어야 함
 
-- 비선점(No Preemption)
+- 비선점(No Preemption): 다른 프로세스에 할당된 자원은 사용이 끝날 때까지 강제로 빼앗을 수 없어야 함
 
-- 환형대기(Circular wait)
+- 환형대기(Circular wait): 자신에게 할당된 자원을 점유하면서 앞이나 뒤에 있는 프로세스의 자원을 요구해야 함
 
   **교착상태 해결 방법**
 
-- 교착상태 방지: 교착상태 필요조건 중 한 가지 이상을 불만족 시키는 방법.
+- 교착상태 방지(Prevention): 교착상태 필요조건 중 한 가지 이상을 불만족 시키는 방법. 자원의 낭비가 가장 심함.
 
-- 교착상태 회피: 자원을 할당할 때 안전하게 할당하는 것
+- 교착상태 회피(Avoidance): 교착상태가 발생할 가능성을 배제하지 않고 발생하면 적절히 피해나가는 방법. 자원을 할당할 때 안전하게 할당하는 것(은행원 알고리즘)
 
-- 교착상태 검출 및 복구 방법: 교착상태를 허용하고 발생 시 복구하는 방법. 프로세스 일부 강제 종료 또는 자원 선점
+- 교착상태 검출 및 복구 방법(Detection): 교착상태를 허용하고 발생 시 복구하는 방법. 프로세스 일부 강제 종료 또는 자원 선점
 
 - 교착상태 무시: 종료 후 재시동
+
+
+
+**동기화 객체의 종류**
 
 
 
@@ -516,7 +422,31 @@ Q. 페이지 크기가 4bytes 이고 페이지 0 - 3까지 각 5,6,1,2 값을 �
 
 정답: 9
 
+
+
+**페이징 기법 vs 세그먼테이션 기법**
+
+`페이징 기법`
+
+- 가상기억장치에 보관되어 있는 프로그램과 주기억장치의 영역을 동일한 크기로 나눈 후 나눠진 프로그램을 동일하게 나눠진 주기억장치의 영역에 적재시켜 실행시키는 기법.
+- 프로그램을 일정하게 나눈 단위를 Page, 주기억장치를 같은 크기로 나눈 단위를 페이지프레임이라고 한다.
+- 내부 단편화가 발생할 수 있다.
+- 주소 변환을 위해 페이지의 위치 정보를 가지고 있는 페이지 맵 테이블이 필요하다. 테이블의 사용으로 비용이 증가되고 처리 속도가 감소한다.
+
+`세그먼테이션 기법`
+
+- 가상기억장치에 보관되어 있는 프로그램을 다양한 크기의 논리적인 단위로 나눈 후 주기억장치에 적재시켜 실행시키는 기법.
+- 프로그램을 배열이나 함수 등과 같은 논리적인 크기로 나눈 단위를 세그먼트라고 하며, 각 세그먼트는 고유한 이름과 크기를 갖는다.
+- 기억장치의 사용자 관접을 보존하는 기억장치 관리 기법이다.
+- 세그먼테이션 기법을 이용하는 궁극적인 이유는 기억 공간을 절약하기 위해서이다.
+- 주소 변환을 위해 세그먼트 맵 테이블이 필요하다.
+- 세그먼트가 주기억장치에 적재될 때 다른 세그먼트에게 할당된 영역을 침범할 수 없으며, 이를 위해 기억장치 보호키가 필요하다.
+
   
+
+**워킹 셋**
+
+- 프로세스가 일정 시간 동안 자주 참조하는 페이지들의 집합으로 프로그램의 지역성 특징을 이용한다.  자주 참조하는 워킹 셋을 주기억장치에 상주시킴으로써 페이지 부재 및 페이지 교체 현상을 줄인다. 
 
 ### 가상 메모리
 
@@ -556,6 +486,10 @@ Q. 페이지 크기가 4bytes 이고 페이지 0 - 3까지 각 5,6,1,2 값을 �
 
 
 
+
+
+
+
 ### 캐시의 지역성
 
 ---
@@ -582,6 +516,21 @@ Q. 페이지 크기가 4bytes 이고 페이지 0 - 3까지 각 5,6,1,2 값을 �
 
 
 
+### 분산처리 운영체제
+
+---
+
+- 장점: 신뢰도 향상, 자원 공유, 연산속도 향상, 컴퓨터 통신
+- 단점: 개발의 어려움, 보안 문제
+
+
+
+### 버퍼링 vs 스풀링
+
+---
+
+두 장치간의 속도차이를 해결하기 위해 사용하는 기법
+
 ### Unix
 
 ---
@@ -589,19 +538,49 @@ Q. 페이지 크기가 4bytes 이고 페이지 0 - 3까지 각 5,6,1,2 값을 �
 **유닉스의 특징**
 
 - 대화식 운영체제
-- 다중 작업 기능
+- 다중 작업 기능(하나 이상의 작업을 백그라운드에서 수행할 수 있음)
 - 다중 사용자 기능
-- 이식성
+- 이식성(C 언어), 장치, 프로세스 간 호환성
 - 계층적 트리 구조 파일 시스템
 - 개발 도구 제공
 - 통신 유틸리티 제공
 - 가상 메모리 기법 사용
 
+- 시분할 시스템 
+
+- 개방형 시스템
+
+- 크기가 작고 이해하기 쉬움
 
 
 **유닉스의 구조**
 
 ![img](https://github.com/SeoJaeyeon/CS/blob/master/img/unix.jpg?raw=true)
 
-- 커널: 프로세스 제어블록/ 장치 드라이버/ 파일 서브 시스템/시스템 자원 관리/하드웨어 자원 관리/ 이식성
-- 셸: 응용 프로그램으로부터 명령을 받아 커널에전송/ 입력 제어/ 프로그램 수행/ 
+`커널`
+
+- UNIX의 가장 핵심적인 부분
+- 컴퓨터가 부팅될 때 주기억장치에 적재된 후 상주하면서 실행
+- 하드웨어를 보호하고 프로그램과 하드웨어 간의 인터페이스 역할 담당
+- 프로세스 관리, 지역장치 관리, 파일 관리, 입/출력 관리, 프로세스간 통신, 데이터 전송 및 변환
+
+*cf) 상위 수준의 소프트웨어가 커널의 기능을 이용할 수 있도록 지원해주는 것: 시스템 호출*
+
+`셸`
+
+- 사용자의 명령어를 인식하여 프로그램을 호출하고 명령을 수행하는 명령어 해석기
+- 시스템과 사용자 간의 인터페이스 담당
+- DOS의 COMMAND.COM 같은 기능
+- 주기억장치에 사웆하지 않고, 명령어가 포함된 파일 형태로 존재하여 보조기억장치에서 교체처리가 가능함
+- 공용 쉘이나 사용자가 만든 쉘을 사용할 수 있음
+- 파이프라인 기능을 지원함 
+
+
+
+**UNIX 파일 시스템의 구조**
+
+- 부트블록: 부팅 시 필요한 코드를 저장하고 있는 블록
+- 슈퍼블록: 전체파일 시스템애 대한 정보를 저장하고 있는 블록
+- I-node 블록: 각 파일이나 디렉터리에 대한 모든 정보를 저장하고 있는 블록
+- 데이터블록: 디렉터리별로 디렉터리 엔트리와 실제 파일에 대한 데이터가 저장된 블록
+
