@@ -109,7 +109,7 @@ TCP/IP 기반의 전 세계 모든 네트워크 간 연결
 
 - 종단 간 신뢰성있고 정확한 데이터 전송
 - 세그먼트 단위
-- 주서 설정, 에러제어, 흐름제어, 다중화
+- 주소 설정, 에러제어, 흐름제어, 다중화
 - TCP, UDP
 
 `Session Layer`
@@ -152,7 +152,7 @@ TCP/IP 기반의 전 세계 모든 네트워크 간 연결
 
 `Application Layer`
 
-- HTTP, SMTP, FT, SNMP, DNS
+- HTTP, SMTP, FTP, SNMP, DNS
 
 
 
@@ -183,7 +183,7 @@ TCP/IP 기반의 전 세계 모든 네트워크 간 연결
 
 **MAC**
 
-- 여러 사용자가 같은 자원을 사용하려고 할 때 누가 자원을 이용할지 결정 내려주는 프로토콜
+- 여러 사용자가 같은 자원을 사용하려고 할 때 누가 자원을 이용할지 결정을 내려주는 프로토콜
 
   `Channelization Protocols` : FDMA, CDMA, TDMA
 
@@ -193,7 +193,7 @@ TCP/IP 기반의 전 세계 모든 네트워크 간 연결
 
 - ALOHA: 여러 스테이션들이 하나의 무선 전송 매체를 공유하는 것이다. Pure ALOHA는 스테이션이 데이터를 보낸 후 RTT 동안 ACK를 기다리고, 받지 못하면 임의의 시간 후 재전송하고 실패가 계속되면 전송을 포기한다. Slotted ALOHA는 데이터 전송 시간을 슬롯으로 나누고 각 슬롯의 시작에만 데이터를 전송할 수 있도록 한다.
 
-- CSMA(Carrier-Sense Multiple Access): 전송하기 전에 매체의 이용 여부를 감지한다. 계속 감지하다 idle이 되면 바로 전송하는 1-persistent CSMA, busy일 때 임의의 시간 후 다시 listen하는 Non-persistent CSMA, idle이어도 p 확률로 전송하는 p-persistent CSMA 모드가 있다. CSMA는 충돌이 일어날 경우 재전송 시간은 노드가 데이터를 전송하고 다시 돌아와 Ack가 없는 사실을 확인한 이후라는 한계가 있다.-
+- CSMA(Carrier-Sense Multiple Access): 전송하기 전에 매체의 이용 여부를 감지한다. 계속 감지하다 idle이 되면 바로 전송하는 1-persistent CSMA, busy일 때 임의의 시간 후 다시 listen하는 Non-persistent CSMA, idle이어도 p 확률로 전송하는 p-persistent CSMA 모드가 있다. CSMA는 충돌이 일어날 경우 재전송 시간은 노드가 데이터를 전송하고 다시 돌아와 Ack가 없는 사실을 확인한 이후라는 한계가 있다.
 
 - CSMA/CD: 충돌이 검출되면 즉시 전송을 멈추고 48bits의 jamming signal을 보내 링크의 모든 노드에 충돌 사실을 알리고, 임의의 시간 후 재전송한다. Ethernet의 기본 동작 방식이다.
 
@@ -255,7 +255,7 @@ TCP/IP 기반의 전 세계 모든 네트워크 간 연결
 - 3-way-handshake: 연결 수립(SYN -  SYN + ACK - ACK)
 - 4-way-handshake: 연결 해제(FIN - ACK - (timewait) - FIN - ACK)
 - 멀티태스킹, 브로드캐스팅 지원하지 않음
-- SMPT, Telnet, HTTP, FTP
+- SMTP(Small Message Transport Protocol), Telnet, HTTP, FTP
 
 **UDP**
 
@@ -354,21 +354,39 @@ RIP는 세 종류의 타이머를 사용한다. 정규 업데이트 메시지 ad
 
 
 
-**Network Mask**
+ #### IP Address
 
+`Class A ` 0.0.0.0 ~ 127.255.255.255  / NetId : 1byte
 
+`Class B` 128.0.0.0 ~ 191.255.255.255 / NetId : 2byte
 
-**Subnet Mask**
+`Class C` 192.0.0.0 ~ 223.255.255.255 / NetId : 3 byte
 
+`Class D` 224.0.0.0 ~ 239.255.255.255 / Multicast address
 
+`Class E` 240.0.0.0 ~ 255.255.255.255 / Reserved for future use
+
+**클래스 주소**
+
+*Q) 199.249.18.22*
+
+Class C에 속하기 때문에 
+
+199.249.18.0 까지가 Network Address이며, Network Mask는 255.255.255.0 이다. 
+
+**서브넷**
+
+*Q) B클래스를 가지는 어떤 기관이 10개의 물리적인 서브네트워크를 필요로 할 때*
+
+10개의 물리적 서브 네트워크 -> 4비트의 subnet id 필요 
+
+B 클래스 -> 255.255.0.0 에서 호스트 주소의 4비트를 서브넷 비트로 사용함
+
+subnet mask: 255.255.240.0
 
 **Gateway**
 
-
-
-**Network Address**
-
-
+ip 주소 계산 후 발생된 ip주소의 범위에서 마지막에 오는 숫자를 넣어줌 
 
 ### HTTP 1.0 VS HTTP 1.1 VS HTTP 2.0
 
@@ -428,11 +446,11 @@ SSL과 조합한 HTTP로 공통키 암호화 방식과 공개키 암호화 방�
 
 ***cf) Http status code***
 
-- 200:
-- 301:
-- 403:
-- 404:
-- 429:
+- 200: 전송 성공
+- 301: 요구한 데이터를 변경된 임시 URL에서 찾음
+- 403: Forbidden
+- 404: Not Found
+- 429: 너무 많은 요청
 
 
 

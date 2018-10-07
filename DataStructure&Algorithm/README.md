@@ -48,7 +48,7 @@
 
 #### Bubble Sort
 
-인접한 두 원소를 비교하여 가장 큰 원소가 맨 뒤에 오도록 정렬하는 방법이다. 가장 간다하나 효율이 낮기 때문에 잘 쓰이지 않는다. 
+인접한 두 원소를 비교하여 가장 큰 원소가 맨 뒤에 오도록 정렬하는 방법이다. 가장 간단하나 효율이 낮기 때문에 잘 쓰이지 않는다. 
 
 **순서**
 
@@ -133,7 +133,9 @@
 
 #### Heap Sort
 
-데이터들을 힙에 넣었다가 꺼내는 원리로 sorting하거나 기존 배열을 hepify한 후 꺼내는 원래로 sorting한다. 
+데이터들을 힙에 넣었다가 꺼내는 원리로 sorting하거나 기존 배열을 hepify한 후 꺼내는 원라로 sorting한다. 
+
+
 
 #### Quick Sort
 
@@ -181,7 +183,7 @@
 | Merge sort     | O(n)             | O(nlogn)                  | O(nlogn)                | O(nlogn)               |
 | Heap sort      | O(1)             | O(nlogn)                  | O(nlogn)                | O(nlogn)               |
 | Quick sort     | O(1)             | O(nlogn)                  | O(n^2)                  | O(nlogn)               |
-| Count sort     | O(n)             | O(n)                      | O(n)                    | O(n)                   |
+| Counting sort  | O(n)             | O(n)                      | O(n)                    | O(n)                   |
 | Radix sort     | O(n)             | O(n)                      | O(n)                    | O(n)                   |
 
 
@@ -198,7 +200,7 @@
 | Merge sort     | O      | O          |
 | Heap sort      | X      | X          |
 | Quick sort     | X      | X          |
-| Count sort     | O      | O          |
+| Counting sort  | O      | O          |
 | Radix sort     | O      | O          |
 
 
