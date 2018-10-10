@@ -606,3 +606,136 @@ Q. 페이지 크기가 4bytes 이고 페이지 0 - 3까지 각 5,6,1,2 값을 �
 - **I-node 블록**: 각 파일이나 디렉터리에 대한 모든 정보를 저장하고 있는 블록
 - 데이터블록: 디렉터리별로 디렉터리 엔트리와 실제 파일에 대한 데이터가 저장된 블록
 
+
+
+
+
+
+
+#### CPU의 Major State
+
+---
+
+| F    | R    | State     |
+| ---- | ---- | --------- |
+| 0    | 0    | Fetch     |
+| 0    | 1    | Indirect  |
+| 1    | 0    | Execute   |
+| 1    | 1    | Interrupt |
+
+
+
+**인출 단계(Fetch Cycle)**
+
+명령어를 수행하기 위해 명령 레지스터에서 명령어를 가져와 해독하는 단계
+
+T0: `MAR <- PC`
+
+T1: `MBR <- M[MAR]`  // MAR이 지정하는 주소값을  MBR에 전송
+
+​      `PC <- PC+1`
+
+T2: `IR <- MBR[OP]` // 명령어의 OP-code를 명령 레지스터에 불러옴
+
+​      `I <- MBR[I]` // 명렁어의 모드 비트를 I 플립플롭에 전송
+
+T3: `I=0, F <- 1` // Exeute Cycle
+
+​      `I=1, R <- 1` // Indirect Cycle
+
+
+
+**간접 단계(Indirect Cycle)**
+
+T0:`MAR <- MBR` // MBR에 있는 명령어 주소 부분을 MAR 에 전송
+
+T1: `MBR <- M[MAR]` // MAR의 값을 MBR에 전송
+
+T3: `F<-1,  R<-0` // Execute Cycle
+
+
+
+**실행 단계(Execute Cycle)**
+
+T0: `MAR <- MBR(AD)` //MBR의 주소부분을 MAR에 전송
+
+T1: `MBR <- M[MAR]` // MAR의 값을 MBR에 전송
+
+T2: `AC <- MBR` // 누산기에 전송 
+
+T3: `F <-0 또는 R <- 1` //Fetch Cycle or Interrupt Cycle
+
+
+
+**인터럽트 단계(Interrupt Cycle)**
+
+T0: `MBR[AD] <- PC` //다음에 수행할 명령 주소를 MBR에 전송
+
+​      `PC <- 0` //복귀할 주소를 저장할 0번지 
+
+T1: `MAR <- PC` //0번지를 MAR에 전송
+
+​      `PC <- PC+1` //PC를 하나 증가시켜서 인터럽트 처리를 위한 주소를 가리킴
+
+T2: `M[MAR] <- MBR` //다음에 수행할 명령어의 주소를 0번지에 저장 
+
+​       `IEN <- 0` //다른 인터럽트가 발생하지 않도록 
+
+T3: `F <-0, R <-0` // Fetch Cycle
+
+
+
+
+
+#### 부울대수 기본정리
+
+---
+
+- 멱등법칙
+
+`A + A = A`
+
+`A * A = A`
+
+- 흡수법칙
+
+`A+(A*B)=A+AB=A`
+
+`A+(A' * B) =A + B`
+
+`A * (A+B) = A`
+
+`A * (A' + B) = AB`
+
+- 보수공리
+
+` A + A' =1`
+
+`A*A'=0`
+
+- 다중부정
+
+`A''=A`
+
+- 항등공리
+
+` A + 1 = 1 `
+
+- 드모르간의 법칙
+
+`A' + B = (A*B)'`
+
+`A' * B' = (A+B)'`
+
+- XOR과 XNOR
+
+`A XOR B = A'B + AB'`
+
+`A XNOR B = A'B' + AB`
+
+
+
+
+
+
+
