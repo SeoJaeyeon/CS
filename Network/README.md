@@ -134,27 +134,18 @@ TCP/IP 기반의 전 세계 모든 네트워크 간 연결
 
 **TCP/IP 5계층**
 
-`Physical Layer`
-
-- 시스템 파라미터, 비트 동기화, 데이터 전송률, 물리적 부착 종류
-
-`Datalink Layer`
-
-- 물리주소 할당, 신뢰성 있는 전송, **프레이밍, 에러제어, 흐름제어, 매체접근제어**
-
-`Network Layer`
-
-- **Routing, 패킷 순방향 전송(데이터그램), 에러 검출**
-
-`Transport Layer`
-
-- **다중화와 역다중화**, **Segment & Reassembly,** 연결지향적 서비스, **에러제어, 흐름제어, 혼잡제어**
-
-`Application Layer`
-
-- HTTP, SMTP, FTP, SNMP, DNS
+| 계층  | 통신               | PDU        | 식별자         | 프로토콜                           |
+| ----- | ------------------ | ---------- | -------------- | ---------------------------------- |
+| 2계층 | Station-to-station | 프레임     | MAC주소        | PPP, Ethernet, FDDI, ATM           |
+| 3계층 | Host-to-host       | 데이터그램 | IP주소         | IP, ARP                            |
+| 4계층 | Process-to-process | 세그먼트   | IP주소+Port no | TCP, UDP                           |
+| 5계층 |                    |            |                | HTTP,   SMTP,   FTP,   SNMP,   DNS |
 
 
+
+| Physical Layer                                               | Datalink Layer                                               | Network Layer               | Transport Layer                                              | Application Layer                  |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | --------------------------- | ------------------------------------------------------------ | ---------------------------------- |
+| 시스템 파라미터,   비트 동기화,   데이터 전송률,   물리적 부착 종류,   전송방식 | 물리주소 할당,   프레이밍,   에러제어,   흐름제어,   매체접근제어 | Routing,   패킷 순방향 전송 | 다중화와 역다중화,   Segment & Reassembly   연결지향적 서비스,   에러제어,   흐름제어+혼잡제어 | HTTP,   SMTP,   FTP,   SNMP,   DNS |
 
 
 
@@ -277,7 +268,7 @@ TCP/IP 기반의 전 세계 모든 네트워크 간 연결
   - 서버가 보낸 ack 넘버를 시퀀스 넘버로 보낸다.
   - ack가 돌아오지 않는다면 데이터가 전달되지 않았다고 판단한 후 다시 보낸다.
 
-  ![3-ways-handshake](https://zetawiki.com/w/images/thumb/d/d5/Process-state.jpg/3-ways.jpg)
+  ![3-ways-handshake](https://github.com/SeoJaeyeon/CS/blob/master/img/3-ways.jpg?raw=true)
 
 - 4-way-handshake: TCP를 사용한 데이터 송수신 간의 정확한 전송을 보장하기 위한 세션 종료 과정
 
@@ -293,7 +284,7 @@ TCP/IP 기반의 전 세계 모든 네트워크 간 연결
 
   `4) Client ACK: 클라이언트는 확인했다는 메시지를 보냄`
 
-  ![3-ways-handshake](https://zetawiki.com/w/images/thumb/d/d5/Process-state.jpg/4-ways.jpg)
+  ![3-ways-handshake](https://github.com/SeoJaeyeon/CS/blob/master/img/4-ways.jpg?raw=true)
 
 **UDP**
 
