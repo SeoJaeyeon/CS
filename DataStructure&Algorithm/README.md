@@ -1,3 +1,5 @@
+
+
 ### Data Structure & Algorithm
 
 ---
@@ -16,10 +18,10 @@
 
 **Adjacency matrix vs Adjacency list**
 
-|               | Adjacency matrix | Adjacency List |
-| ------------- | ---------------- | -------------- |
-| Compete graph | O(n^2)           | O(n^2)         |
-| Sparse graph  | O(n^2)           | O(n)           |
+|                | Adjacency matrix | Adjacency List |
+| -------------- | ---------------- | -------------- |
+| Complete graph | O(n^2)           | O(n^2)         |
+| Sparse graph   | O(n^2)           | O(n)           |
 
 
 
@@ -33,6 +35,14 @@
 
 
 
+*ex) Recursive Call 을 이용한 완전 탐색시*
+
+- *조건을 만족하지 못하고 종료하는 조건*
+- *조건을 만족하고 카운트 또는 출력하는 조건*
+- *다음 경우의 수 (재귀호출)*
+
+
+
 #### BFS
 
 - 모든 인접한 vertex을 visited check하고 Queue에 삽입한다. 
@@ -40,7 +50,7 @@
 - Queue가 empty일 때까지 반복한다.
 - Connected Component, Shortest Path
 
-
+- 가중치 없는 그래프의 최단경로/ 가중치가 0또는 1(DEQ)
 
 ### Sorting Algorithm
 
@@ -123,7 +133,7 @@
 
 #### Merge Sort
 
-더이상 나누어지지 않을 때까지 반 씩 분할하다가, 더 이상 나누어지지 않는 경우에 자신의 원소 하나를 반환한다. 반환된 원소끼리 combine하면서 비교가 이루어진다. 정렬은 병합하는 과정에서 이루어진다. 
+더이상 나누어지지 않을 때까지 반 씩 분할하다가, 더 이상 나누어지지 않는 경우에 자신의 원소 하나를 반환한다. 반환된 원소끼리 combine하면서 비교가 이루어진다. **정렬은 병합하는 과정**에서 이루어진다. 
 
 ***cf) External Merge sort***
 
@@ -135,11 +145,20 @@
 
 데이터들을 힙에 넣었다가 꺼내는 원리로 sorting하거나 기존 배열을 hepify한 후 꺼내는 원라로 sorting한다. 
 
+**Heap**
+
+- 우선 순위에 자주 접근하거나 우선순위 중심으로 정렬된 시퀀스를 활용해야할 때 유용한 자료구조로 완전이진트리 기반이다. 
+
+**Heap vs Binary Search Tree**
+
+- 공통점: 이진트리
+
+- 차이점: 힙은 각 노드의 값이 자식 노드의 값보다 큰 반면, BST는 왼쪽 자식노드가 제일 작고 부모노드가 그 다음으로 크며, 오른쪽 자식노드가 가장 큰 값을 가진다. 힙은 우선순위 정렬에, BST는 탐색에 강점을 지닌다. 
 
 
 #### Quick Sort
 
-임의의 pivot을 정하고 pivot을 기준으로 좌측은 pivot보다 작은 값, 우측은 큰 값이 위치하도록 partition한다. 그리고 pivot을 기준으로 두 배열을 재귀적으로 다시 partition을 반복한다. 이때, pivot으로 설정된 값은 다음 재귀과정에 포함시키지 않는다. 이미 정렬된 상태의 배열을 Quick sort로 정렬할 경우 O(n^2)의 시간복잡도를 가진다. 
+임의의 pivot을 정하고 pivot을 기준으로 좌측은 pivot보다 작은 값, 우측은 큰 값이 위치하도록 partition한다. 그리고 pivot을 기준으로 두 배열을 재귀적으로 다시 partition을 반복한다. 이때, pivot으로 설정된 값은 다음 재귀과정에 포함시키지 않는다. 이미 **정렬된 상태의 배열을 Quick sort로 정렬할 경우 O(n^2)의 시간복잡도**를 가진다. 
 
 
 
@@ -180,7 +199,7 @@
 | Bubble sort    | O(1)             | O(n^2)                    | O(n^2)                  | O(n^2)                 |
 | Selection sort | O(1)             | O(n^2)                    | O(n^2)                  | O(n^2)                 |
 | Insertion sort | O(1)             | O(n^2)                    | O(n^2)                  | O(n)                   |
-| Merge sort     | O(n)             | O(nlogn)                  | O(nlogn)                | O(nlogn)               |
+| Merge sort     | O(nlogn)         |                           | O(nlogn)                | O(nlogn)               |
 | Heap sort      | O(1)             | O(nlogn)                  | O(nlogn)                | O(nlogn)               |
 | Quick sort     | O(1)             | O(nlogn)                  | O(n^2)                  | O(nlogn)               |
 | Counting sort  | O(n)             | O(n)                      | O(n)                    | O(n)                   |
