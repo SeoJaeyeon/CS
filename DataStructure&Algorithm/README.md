@@ -199,7 +199,7 @@
 | Bubble sort    | O(1)             | O(n^2)                    | O(n^2)                  | O(n^2)                 |
 | Selection sort | O(1)             | O(n^2)                    | O(n^2)                  | O(n^2)                 |
 | Insertion sort | O(1)             | O(n^2)                    | O(n^2)                  | O(n)                   |
-| Merge sort     | O(nlogn)         |                           | O(nlogn)                | O(nlogn)               |
+| Merge sort     | O(n)             | O(nlogn)                  | O(nlogn)                | O(nlogn)               |
 | Heap sort      | O(1)             | O(nlogn)                  | O(nlogn)                | O(nlogn)               |
 | Quick sort     | O(1)             | O(nlogn)                  | O(n^2)                  | O(nlogn)               |
 | Counting sort  | O(n)             | O(n)                      | O(n)                    | O(n)                   |
