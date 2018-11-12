@@ -49,8 +49,38 @@
 - deleteQueue한 노드부터 다시 BFS를 수행한다
 - Queue가 empty일 때까지 반복한다.
 - Connected Component, Shortest Path
-
 - 가중치 없는 그래프의 최단경로/ 가중치가 0또는 1(DEQ)
+
+
+
+
+
+### Minimum Spanning Tree
+
+그래프 G 의 spanning tree 중 edge weight 의 합이 최소인 `spanning tree`를 말한다. 여기서 말하는 `spanning tree`란 그래프 G 의 모든 vertex 가 cycle 이 없이 연결된 형태를 말한다.
+
+### Kruskal Algorithm
+
+초기화 작업으로 **edge 없이** vertex 들만으로 그래프를 구성한다. 그리고 weight 가 제일 작은 edge 부터 검토한다. 그러기 위해선 Edge Set 을 non-decreasing 으로 sorting 해야 한다. 그리고 가장 작은 weight 에 해당하는 edge 를 추가하는데 추가할 때 그래프에 cycle 이 생기지 않는 경우에만 추가한다. spanning tree 가 완성되면 모든 vertex 들이 연결된 상태로 종료가 되고 완성될 수 없는 그래프에 대해서는 모든 edge 에 대해 판단이 이루어지면 종료된다.
+
+#### 어떻게 cycle 생성 여부를 판단하는가?
+
+Graph 의 각 vertex 에 `set-id`라는 것을 추가적으로 부여한다. 그리고 초기화 과정에서 모두 1~n 까지의 값으로 각각의 vertex 들을 초기화 한다. 여기서 0 은 어떠한 edge 와도 연결되지 않았음을 의미하게 된다. 그리고 연결할 때마다 `set-id`를 하나로 통일시키는데, 값이 동일한 `set-id` 개수가 많은 `set-id` 값으로 통일시킨다.
+
+#### Time Complexity
+
+1. Edge 의 weight 를 기준으로 sorting - O(E log E)
+2. cycle 생성 여부를 검사하고 set-id 를 통일 - O(E + V log V) => 전체 시간 복잡도 : O(E log E)
+
+### Prim Algorithm
+
+초기화 과정에서 한 개의 vertex 로 이루어진 초기 그래프 A 를 구성한다. 그리고나서 그래프 A 내부에 있는 vertex 로부터 외부에 있는 vertex 사이의 edge 를 연결하는데 그 중 가장 작은 weight 의 edge 를 통해 연결되는 vertex 를 추가한다. 어떤 vertex 건 간에 상관없이 edge 의 weight 를 기준으로 연결하는 것이다. 이렇게 연결된 vertex 는 그래프 A 에 포함된다. 위 과정을 반복하고 모든 vertex 들이 연결되면 종료한다.
+
+#### Time Complexity
+
+=> 전체 시간 복잡도 : O(E log V)
+
+
 
 ### Sorting Algorithm
 
@@ -273,5 +303,36 @@ Skewed Tree 일 경우 O(n) 으로 탐색된다.
 
 
 
+#### Red Black Tree
+
+---
+
+   BST를 기반으로하는 트리형식의 자료구조로 Search, Insert, Delete에 O(log n) 시간 소요.
+
+"동일한 노드의 개수일 때, depth를 최소화하여 시간 복잡도를 줄이는 것이 핵심 아이디어(=complete binary tree)"
+
+
+
 #### HashTable
 
+---
+
+  내부적으로 배열을 사용하여 데이터를 저장하기 때문에 빠른 검색 속도를 가짐. Search하는 데 데이터 고유의 인덱스로 접근하기 때문에 average case에 대해 O(1)을 가진다. 
+
+- 저장되는 값들의 key 값을 hash function을 통해 작은 범위의 고유한 인덱스 값으로 변경한다. 
+
+
+
+### Greedy Algorithm
+
+---
+
+  각 단계에서 가장 최선의 선택을 하는 알고리즘으로 동적계획법보다 수행 시간이 빠르다. 현재의 선택이 다음 선택에 전혀 무관한 값이어야 하며, 매 순간의 최적해가 문제에 대한 최적해일 때 적용 가능하다. 또는, 최적해 대신 근사해를 구할 때 사용할 수도 있다.
+
+
+
+### DP
+
+---
+
+  복잡한 문제를 간단한 여러 개의 하위 문제로 나누어 푸는 방법으로 중간 계산 과정을 저장해두었다가 사용하여 효율을 높인다는 특징이 있다. Top-down 방식과 Bottom-up 방식이 있다. 

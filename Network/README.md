@@ -120,10 +120,14 @@ TCP/IP 기반의 전 세계 모든 네트워크 간 연결
 
 `Presentation Layer`
 
+- 데이터 표현이 상이한 응용 프로세스의 독립성을 제공하고 암호화
+
 - **인코딩, 디코딩, 암호화, 코드변환**
 - **메시지**
 
 `Appication Layer`
+
+- 최종목적지로서 응용 프로세스와 직접 관계하여 응용 서비스를 수행한다.
 
 - **메시지**
 - **HTTP, FTP, DNS, SMTP**
@@ -447,7 +451,7 @@ TCP connection에서 한번에 하나의 요청만 가능
 
 **HTTP 2.0**
 
-- **Multiplexed Streams**: 한 커넥션으로 동시에 여러 개의 메시지를 주고받을 수 없고, 응답은 순서에 상관없이 stream으로 주고 받는다.
+- **Multiplexed Streams**: 한 커넥션으로 동시에 여러 개의 메시지를 주고받을 수 있고, 응답은 순서에 상관없이 stream으로 주고 받는다.
 - **Stream Prioritization**: 리소스간 우선순위를 설정하여 렌더링 문제 해결
 - **Server Push**: 서버는 클라이언트의 요청에 대해 요청하지도 않은 리소스를 마음대로 보낼 수 있음. 즉, 클라이언트의 요청을 최소화해서 성능 향상을 이끌어 냄
 - **Header Compression**
@@ -460,7 +464,7 @@ TCP connection에서 한번에 하나의 요청만 가능
 
 **HTTP의 문제점**
 
-- 평문 통신이기 때문에 도청이 가능함: SSL 또는 TSL이라는 다른 프로토콜과 조합함으로써 통신 내용을 함호화 할 수 있다. SSL과 조합한 HTTP를 HTTPs라고 한다.
+- 평문 통신이기 때문에 도청이 가능함: SSL 또는 TSL이라는 다른 프로토콜과 조합함으로써 통신 내용을 암호화 할 수 있다. SSL과 조합한 HTTP를 HTTPs라고 한다.
 - 통신 상대를 확인하지 않기 때문에 위장이 가능함: SSL에서 제공하는 증명서를 통해 상대를 인증할 수 있다.
 - 완전성을 증명할 수 없기 때문에 변조가 가능함
 
@@ -485,6 +489,14 @@ SSL과 조합한 HTTP로 **공통키 암호화 방식과 공개키 암호화 방
 ### RESTful
 
 ---
+
+**RESTful이란?**
+
+HTTP URI를 통해 Resource를 명시하고 HTTP Method를 통해 해당 Resource를 조작하는 것
+
+*자원(RESOURCE-URI) + 행위(Verb - HTTP Method) + 표현(Representation)*
+
+
 
 **REST의 특징**
 
